@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>COVID Data - Victoria</title>
+      <script src="{{ url_for('static', filename='script.js') }}"></script>
+      <script type = "text/javascript" src = "https://www.gstatic.com/charts/loader.js"></script>
+      <script type = "text/javascript">google.charts.load('current', {packages: ['corechart']});</script>
+      <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   </head>
+   <body>
+      <div class="header"></div>
+      <nav>
+         <ul>
+            <li><a href="/">State</a></li>
+            <li><a href="/localarea/">Local Area</a></li>
+            <li><a href="/news/">News</a></li>
+         </ul>
+      </nav>
+      <h2>DHHS Victoria Twitter Feed</h2>
+      <div id = "twitter">
+         <a class="twitter-timeline" data-height="750" data-width="1200" data-theme="dark" href="https://twitter.com/VicGovDH?ref_src=twsrc%5Etfw">Tweets by VicGovDH</a> 
+         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+      <h2>Latest News</h2>
+      <div>
+         <table class="news">
+            <tr>
+               <th>Headline</th>
+               <th>Source</th>
+            </tr>
+            {% for headline in top_headlines %}
+            <tr>
+               <td class="news">{{ headline.title }}</td>
+               <td><a href="{{ headline.url }}">Link</a></td>
+            </tr>
+            {% endfor %}
+         </table>
+      </div>
+      <h2>Other News and Resources</h2>
+      <div id = "link">
+         <a href="http://www.coronavirus.vic.gov.au/">Victorian Government COVID Website</a><br><br>
+         <a href="https://www.australia.gov.au/">Australian Government Website</a><br><br> 
+         <a href="https://www.dhhs.vic.gov.au/coronavirus">DHSS Victoria  Website</a><br><br> 
+         <a href="https://covidlive.com.au/">COVID LIVE</a><br><br>
+      </div>
+   </body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>COVID Data - Victoria</title>
+      <script src="{{ url_for('static', filename='script.js') }}"></script>
+      <script type = "text/javascript" src = "https://www.gstatic.com/charts/loader.js"></script>
+      <script type = "text/javascript">google.charts.load('current', {packages: ['corechart']});</script>
+      <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   </head>
+   <body>
+      <div class="header"></div>
+      <nav>
+         <ul>
+            <li><a href="/">State</a></li>
+            <li><a href="/localarea/">Local Area</a></li>
+            <li><a href="/news/">News</a></li>
+         </ul>
+      </nav>
+      <h2>Query</h2>
+      <div id = "query">
+         <form  method="POST" action="/localarea/">
+            <div class="container">
+               <div id = "formlabel">
+                  <label>Suburb:</label>
+               </div>
+               <div id = "forminput">
+                  <input type="text"  name="area" id="area">
+               </div>
+               <div id = "formlabel">
+                  <label>Select Range (optional):</label>
+               </div>
+               <div id = "forminput">
+                  <select name="time" id="time">
+                     <option value="0" hidden selected>Select range...</option>
+                     <option value="7">Last week</option>
+                     <option value="30">Last month</option>
+                     <option value="90">Last 3 months</option>
+                     <option value="180">Last 6 months</option>
+                  </select>
+               </div>
+               <button id = "qb" type="submit">Query</button>
+               <p class="error">{{error}}</p>
+            </div>
+         </form>
+      </div>
+      {% if user_query %}
+      <h2>Daily New Cases in {{area}}</h2>
+      <div id = "chartcontainer">
+         <script language = "JavaScript">
+            function drawChart() {
+            
+               var data = google.visualization.arrayToDataTable([
+                   ['Date', 'No. of Cases'],
+                   {% for case in user_query %}
+                   [new Date('{{ case['date'] }}'),{{ case['total'] }}], 
+                   {% endfor %}
+               ]);
+            
+               var options = {
+               title: 'Daily New Cases in {{area}}',
+               titleTextStyle: {color: '#ffffff'},
+               legend: 'none',
+               hAxis: { 
+                   title: 'Date',
+            format:'d/M/yy',   
+                   titleTextStyle: {color: '#ffffff',  
+                        bold: true,
+                        italic: false, 
+                        fontSize: 14},  
+                   textStyle: {color: '#ffffff'}},
+               vAxis: { 
+                   title: 'Number of  New Cases',   
+                   titleTextStyle: {color: '#ffffff',  
+                        bold: true,
+                        italic: false, 
+                        fontSize: 14},  
+                   textStyle: {color: '#ffffff'}},
+               backgroundColor: {
+                   fill: '#333333'
+               },
+               }; 
+            
+               // Instantiate and draw the chart.
+               var chart = new google.visualization.ColumnChart(document.getElementById('chartcontainer'));
+               chart.draw(data, options);
+            }
+            google.charts.setOnLoadCallback(drawChart);
+         </script>
+      </div>
+      <div id="container">
+         <table class="data">
+            <tr>
+               <th>Date</th>
+               <th>Number of New Cases</th>
+            </tr>
+            {% for case in user_query %}
+            <tr>
+               <td class="data">{{ case['date'] }}</td>
+               <td class="data">{{ case['total'] }}</td>
+            </tr>
+            {% endfor %}
+         </table>
+      </div>
+      {% endif %}
+   </body>
+</html>
